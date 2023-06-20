@@ -5,7 +5,7 @@ import time
 app = Flask(__name__)
 
 # MQTT broker configuration
-broker_address = "192.168.29.84"
+broker_address = "test.mosquitto.org"
 broker_port = 1883
 broker_username = "your_mqtt_username"
 broker_password = "your_mqtt_password"
