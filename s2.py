@@ -7,15 +7,12 @@ app = Flask(__name__)
 # MQTT broker configuration
 broker_address = "test.mosquitto.org"
 broker_port = 1883
-broker_username = "your_mqtt_username"
-broker_password = "your_mqtt_password"
 payload_data = ""
 
 # Create an MQTT client
 mqtt_client = mqtt.Client()
 
 # Connect to the MQTT broker
-#mqtt_client.username_pw_set(broker_username, broker_password)
 mqtt_client.connect(broker_address, broker_port)
 
 # Define the 'truffle' endpoint
@@ -24,9 +21,11 @@ def truffle_endpoint():
     global payload_data
     data = request.get_data(as_text=True)
     mqtt_client.publish('truffle', data)
+    print('Sent message to "truffle":', data)
     while payload_data == "":
       time.sleep(0.5)
     msg = payload_data
+    print('Received message from "truffle":', msg)
     payload_data = ""
     return msg
 
@@ -34,7 +33,8 @@ def truffle_endpoint():
 @app.route('/trufflecontrol', methods=['POST'])
 def truffle_control_endpoint():
     data = request.get_data(as_text=True)
-    print('Received message from "trufflecontrol":', data)
+    mqtt_client.publish('trufflecontrol', data)
+    print('Sent message to "trufflecontrol":', data)
     return 'Message received from "trufflecontrol"'
 
 # MQTT on_connect callback
