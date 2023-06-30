@@ -15,7 +15,6 @@ mqtt_client = mqtt.Client()
 
 # Connect to the MQTT broker
 mqtt_client.connect(broker_address, broker_port)
-
 # Define the 'truffle' endpoint
 @app.route('/truffle', methods=['POST'])
 def truffle_endpoint():
