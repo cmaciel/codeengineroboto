@@ -1,6 +1,7 @@
 from flask import Flask, request
 import paho.mqtt.client as mqtt
 import time
+import json
 
 app = Flask(__name__)
 
@@ -19,9 +20,11 @@ mqtt_client.connect(broker_address, broker_port)
 @app.route('/truffle', methods=['POST'])
 def truffle_endpoint():
     global payload_data
-    data = request.get_data(as_text=True)
-    mqtt_client.publish('truffle', data)
-    print('Sent message to "truffle":', data)
+    data = json.loads(request.get_data(as_text=True))
+    truffletype=data["color"]
+    print(truffletype)
+    mqtt_client.publish('truffle', truffletype)
+    print('Sent message to "truffle":', truffletype)
     while payload_data == "":
       time.sleep(0.5)
     msg = payload_data
@@ -31,10 +34,11 @@ def truffle_endpoint():
 
 # Define the 'trufflecontrol' endpoint
 @app.route('/trufflecontrol', methods=['POST'])
-def truffle_control_endpoint():
-    data = request.get_data(as_text=True)
-    mqtt_client.publish('trufflecontrol', data)
-    print('Sent message to "trufflecontrol":', data)
+def trufflecontrol_endpoint():
+    data = json.loads(request.get_data(as_text=True))
+    msg=data["trufflecontrol"]
+    mqtt_client.publish('trufflecontrol', msg)
+    print('Sent message to "trufflecontrol":', msg)
     return 'Message received from "trufflecontrol"'
 
 # MQTT on_connect callback
